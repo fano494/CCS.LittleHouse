@@ -1,0 +1,9 @@
+﻿@model CCS.LittleHouse.Aplication.DTO.Users.UserDTO
+@{
+    ViewData["Title"] = "Login";
+}
+
+<h1>Login User: @Model.Name</h1>
+
+<a asp-controller="Journals" asp-action="Index" asp-route-id="@Model.Id">Ver diario</a>
+

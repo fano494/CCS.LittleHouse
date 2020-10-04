@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CCS.LittleHouse.Aplication\CCS.LittleHouse.Aplication.csproj" />
+    <ProjectReference Include="..\CCS.LittleHouse.Data\CCS.LittleHouse.Data.csproj" />
+    <ProjectReference Include="..\CCS.LittleHouse.IoC.Web\CCS.LittleHouse.IoC.Web.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Models\Users\" />
+  </ItemGroup>
+
+</Project>
