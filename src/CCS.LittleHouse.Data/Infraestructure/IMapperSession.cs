@@ -12,6 +12,7 @@ namespace CCS.LittleHouse.Data.Infraestructure
         Task Rollback();
         void CloseTransaction();
         Task Save<Tentity>(Tentity entity) where Tentity : Entity;
+        Task Update<Tentity>(Tentity entity) where Tentity : Entity;
         Task Delete<Tentity>(Tentity entity) where Tentity : Entity;
         IQueryable<Tentity> GetAll<Tentity>() where Tentity : Entity;
         Tentity GetById<Tentity>(Guid id) where Tentity : Entity;

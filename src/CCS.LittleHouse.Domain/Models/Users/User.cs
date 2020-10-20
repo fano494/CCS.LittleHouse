@@ -10,6 +10,20 @@ namespace CCS.LittleHouse.Domain.Models.Users
         private IList<Journal> _journals;
         private string _name;
 
+        protected User()
+        {
+
+        }
+
+        internal static User Create(string name)
+        {
+            return new User()
+            {
+                _journals = new List<Journal>(),
+                _name = name
+            };
+        }
+
         public virtual Journal[] Journals
         {
             get
@@ -34,18 +48,7 @@ namespace CCS.LittleHouse.Domain.Models.Users
             }
         }
 
-        protected User()
-        {
-
-        }
-
-        public User(string name)
-        {
-            _journals = new List<Journal>();
-            _name = name;
-        }
-
-        public virtual void EditName(string name)
+        protected internal virtual void EditName(string name)
         {
             _name = name;
             UpdateEditDateTime();

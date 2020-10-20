@@ -34,7 +34,7 @@ namespace CCS.LittleHouse.Aplication.Services.Journals
                 Journal journal = _mapper.Map<JournalDTO, Journal>(data);
 
                 user.AddJournal(journal);
-                await _usersRepository.Save(user);
+                await _usersRepository.Create(user);
             });
         }
 
@@ -46,7 +46,7 @@ namespace CCS.LittleHouse.Aplication.Services.Journals
                 Journal journal = _mapper.Map<JournalDTO, Journal>(data);
 
                 user.DeleteJournal(journal);
-                await _usersRepository.Save(user);
+                await _usersRepository.Create(user);
             });
         }
 

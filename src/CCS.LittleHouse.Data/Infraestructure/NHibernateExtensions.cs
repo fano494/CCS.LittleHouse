@@ -24,11 +24,7 @@ namespace CCS.LittleHouse.Data.Infraestructure
             {
                 m.FluentMappings.AddFromAssembly(Assembly.GetExecutingAssembly());
             });
-
-            if (schemaExport)
-            {
-                configuration.ExposeConfiguration(cfg => new SchemaExport(cfg).Execute(false, true, false));
-            }
+            configuration.ExposeConfiguration(cfg => new SchemaExport(cfg).Create(false, schemaExport));
 
             ISessionFactory sessionFactory = configuration.BuildSessionFactory();
 

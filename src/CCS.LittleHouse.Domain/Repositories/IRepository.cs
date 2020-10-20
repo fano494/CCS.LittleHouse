@@ -9,7 +9,8 @@ namespace CCS.LittleHouse.Domain.Repositories
     {
         Tentity GetById(Guid id);
         IQueryable<Tentity> GetAll { get; }
-        Task Save(Tentity entity);
+        Task Create(Tentity entity);
+        Task Update(Tentity entity);
         Task Delete(Tentity entity);
         Task RunInTransaction(Action action);
         Task<T> RunInTransaction<T>(Func<Task<T>> func);

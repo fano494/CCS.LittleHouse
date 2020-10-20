@@ -1,6 +1,7 @@
 ﻿using CCS.LittleHouse.Data.Infraestructure;
 using CCS.LittleHouse.Domain.Models;
 using CCS.LittleHouse.Domain.Repositories;
+using CCS.LittleHouse.Domain.Repositories.Exceptions;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Linq;
@@ -28,11 +29,6 @@ namespace CCS.LittleHouse.Data.Repositories
         public Tentity GetById(Guid id)
         {
             return MapperSession.GetById<Tentity>(id);
-        }
-
-        public async Task Rollback()
-        {
-            await MapperSession.Rollback();
         }
 
         public async Task RunInTransaction(Action action)
@@ -69,11 +65,11 @@ namespace CCS.LittleHouse.Data.Repositories
 
                 return retval;
             }
-            catch (Exception ex)
+            catch
             {
-                await Rollback();
+                await MapperSession.Rollback();
 
-                throw ex;
+                throw;
             }
             finally
             {
@@ -81,9 +77,14 @@ namespace CCS.LittleHouse.Data.Repositories
             }
         }
 
-        public async Task Save(Tentity entity)
+        public async Task Create(Tentity entity)
         {
             await MapperSession.Save(entity);
+        }
+
+        public async Task Update(Tentity entity)
+        {
+            await MapperSession.Update(entity);
         }
     }
 }
