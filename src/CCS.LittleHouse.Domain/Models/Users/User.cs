@@ -15,7 +15,7 @@ namespace CCS.LittleHouse.Domain.Models.Users
 
         }
 
-        protected internal static User Create(string name)
+        public static User Create(string name)
         {
             if (name is null)
                 throw new NullUserNameException("The user name can't be null (Creation).");
