@@ -23,36 +23,28 @@ namespace CCS.LittleHouse.Domain.Models.Users
             return _usersRepository.GetById(id);
         }
 
-        public async Task<User> CreateUser(string name)
+        public User CreateUser(string name)
         {
             if (_usersRepository.IsNameUnique(name))
             {
-                return await _usersRepository.RunInTransaction(async () =>
-                {
-                    User user = User.Create(name);
-                    await _usersRepository.Create(user);
-                    return user;
-                });
+                User user = User.Create(name);
+                return user;
             }
             else
             {
-                throw new InvalidOperationException("The name is currently in use");
+                throw new ExistingUserException($"Exising User(Name: {name}) exception.");
             }
         }
 
-        public async Task EditName(User user, string name)
+        public void EditName(User user, string name)
         {
             if (_usersRepository.IsNameUnique(name))
             {
-                await _usersRepository.RunInTransaction(async () =>
-                {
-                    user.EditName(name);
-                    await _usersRepository.Update(user);
-                });
+                user.EditName(name);
             }
             else
             {
-                throw new InvalidOperationException("The name is currently in use");
+                throw new ExistingUserException($"Exising User(Name: {name}) exception.");
             }
         }
     }

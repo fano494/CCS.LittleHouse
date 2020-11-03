@@ -5,14 +5,9 @@ using System.Text;
 
 namespace CCS.LittleHouse.Test.Unit.Models
 {
+    [TestFixture]
     public class Entity_EqualsShould
     {
-        [SetUp]
-        public void Setup()
-        {
-            
-        }
-
         [Test]
         public void Equals_True()
         {

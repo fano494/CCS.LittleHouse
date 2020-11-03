@@ -9,16 +9,9 @@ using System.Text;
 
 namespace CCS.LittleHouse.Test.Unit.Models.Users
 {
+    [TestFixture]
     public class UsersManager_GetById
     {
-        private IUsersManager _usersManager;
-
-        [SetUp]
-        public void Setup()
-        {
-            
-        }
-
         [Test]
         public void GetById_Found()
         {
@@ -26,10 +19,10 @@ namespace CCS.LittleHouse.Test.Unit.Models.Users
             User user = new UserFake("userfake");
             Mock<IUsersRepository> repository = new Mock<IUsersRepository>();
             repository.Setup(repo => repo.GetById(It.IsAny<Guid>())).Returns(user);
-            _usersManager = new UsersManager(repository.Object);
+            IUsersManager usersManager = new UsersManager(repository.Object);
 
             // Act
-            User result = _usersManager.GetById(user.Id);
+            User result = usersManager.GetById(user.Id);
 
             // Assert
             Assert.AreEqual(result, user);
@@ -41,10 +34,10 @@ namespace CCS.LittleHouse.Test.Unit.Models.Users
             // Arrange
             Mock<IUsersRepository> repository = new Mock<IUsersRepository>();
             repository.Setup(repo => repo.GetById(It.IsAny<Guid>())).Throws(new EntityNotFoundException());
-            _usersManager = new UsersManager(repository.Object);
+            IUsersManager usersManager = new UsersManager(repository.Object);
 
             // Act and Assert
-            Assert.Throws<EntityNotFoundException>(() => _usersManager.GetById(Guid.NewGuid()));
+            Assert.Throws<EntityNotFoundException>(() => usersManager.GetById(Guid.NewGuid()));
         }
     }
 }

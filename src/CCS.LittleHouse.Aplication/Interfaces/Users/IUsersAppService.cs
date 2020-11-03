@@ -9,5 +9,6 @@ namespace CCS.LittleHouse.Aplication.Interfaces.Users
         UserDTO GetById(Guid id);
         UserDTO Login(string userName);
         Task<UserDTO> Register(string userName);
+        Task EditUserName(UserDTO data);
     }
 }

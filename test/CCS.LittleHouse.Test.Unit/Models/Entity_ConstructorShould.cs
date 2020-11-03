@@ -5,14 +5,9 @@ using System.Text;
 
 namespace CCS.LittleHouse.Test.Unit.Models
 {
+    [TestFixture]
     public class Entity_ConstructorShould
     {
-        [SetUp]
-        public void Setup()
-        {
-
-        }
-
         [Test]
         public void Constructor_NewGuid()
         {

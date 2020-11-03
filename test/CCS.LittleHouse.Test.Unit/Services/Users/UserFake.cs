@@ -3,18 +3,13 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace CCS.LittleHouse.Test.Unit.Models.Users
+namespace CCS.LittleHouse.Test.Unit.Services.Users
 {
     public class UserFake : User
     {
         public UserFake(string username)
         {
             Name = username;
-        }
-
-        public new static User Create(string username)
-        {
-            return User.Create(username);
         }
     }
 }

@@ -15,8 +15,11 @@ namespace CCS.LittleHouse.Domain.Models.Users
 
         }
 
-        internal static User Create(string name)
+        protected internal static User Create(string name)
         {
+            if (name is null)
+                throw new NullUserNameException("The user name can't be null (Creation).");
+
             return new User()
             {
                 _journals = new List<Journal>(),
@@ -50,6 +53,9 @@ namespace CCS.LittleHouse.Domain.Models.Users
 
         protected internal virtual void EditName(string name)
         {
+            if (name is null)
+                throw new NullUserNameException("The user name can't be null (Edition).");
+
             _name = name;
             UpdateEditDateTime();
         }

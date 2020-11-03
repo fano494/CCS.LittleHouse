@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace CCS.LittleHouse.Data.Repositories
 {
-    public class Repository<Tentity> : IRepository<Tentity> where Tentity : Entity
+    public abstract class Repository<Tentity> : IRepository<Tentity> where Tentity : Entity
     {
         private readonly IHttpContextAccessor _contextAccessor;
         protected IMapperSession MapperSession => _contextAccessor.HttpContext.RequestServices.GetService(typeof(IMapperSession)) as IMapperSession;
@@ -31,13 +31,13 @@ namespace CCS.LittleHouse.Data.Repositories
             return MapperSession.GetById<Tentity>(id);
         }
 
-        public async Task RunInTransaction(Action action)
+        public async Task RunInTransaction(Func<Task> action)
         {
             try
             {
                 MapperSession.BeginTransaction();
 
-                action();
+                await action();
 
                 await MapperSession.Commit();
             }

@@ -10,7 +10,7 @@ namespace CCS.LittleHouse.Domain.Models.Users
     {
         IQueryable<User> GetAll { get; }
         User GetById(Guid id);
-        Task<User> CreateUser(string name);
-        Task EditName(User user, string name);
+        User CreateUser(string name);
+        void EditName(User user, string name);
     }
 }

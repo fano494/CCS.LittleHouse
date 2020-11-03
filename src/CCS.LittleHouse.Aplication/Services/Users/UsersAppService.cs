@@ -15,11 +15,13 @@ namespace CCS.LittleHouse.Aplication.Services.Users
     {
         private readonly IMapper _mapper;
         private readonly IUsersManager _usersManager;
+        private readonly IUsersRepository _usersRepository;
 
-        public UsersAppService(IMapper mapper, IUsersManager usersManager)
+        public UsersAppService(IMapper mapper, IUsersManager usersManager, IUsersRepository usersRepository)
         {
             _mapper = mapper;
             _usersManager = usersManager;
+            _usersRepository = usersRepository;
         }
 
         public UserDTO GetById(Guid id)
@@ -27,7 +29,7 @@ namespace CCS.LittleHouse.Aplication.Services.Users
             try
             {
                 User user = _usersManager.GetById(id);
-                return _mapper.Map<User, UserDTO>(user);
+                return _mapper.Map<UserDTO>(user);
             }
             catch(EntityNotFoundException ex)
             {
@@ -48,7 +50,7 @@ namespace CCS.LittleHouse.Aplication.Services.Users
             try
             {
                 User user = _usersManager.GetAll.First(u => u.Name.Equals(userName));
-                return _mapper.Map<User, UserDTO>(user);
+                return _mapper.Map<UserDTO>(user);
             }
             catch (InvalidOperationException ex)
             {
@@ -68,8 +70,49 @@ namespace CCS.LittleHouse.Aplication.Services.Users
         {
             try
             {
-                User user = await _usersManager.CreateUser(userName);
-                return _mapper.Map<User, UserDTO>(user);
+                return await _usersRepository.RunInTransaction(async () =>
+                {
+                    User user = _usersManager.CreateUser(userName);
+                    await _usersRepository.Create(user);
+                    return _mapper.Map<UserDTO>(user);
+                });
+            }
+            catch (ExistingUserException ex)
+            {
+               throw new ExistingResourceException($"Exising User(Name: {userName}) exception.", ex);
+            }
+            catch (NullUserNameException ex)
+            {
+                throw new InvalidArgumentException("User name (NULL) not valid.", ex);
+            } 
+            catch (InternalRepositoryException ex)
+            {
+                throw new RepositoryException("Users repository exception.", ex);
+            }
+            catch (Exception ex)
+            {
+                throw new InternalApplicationException("Users application exception.", ex);
+            }
+        }
+
+        public async Task EditUserName(UserDTO data)
+        {
+            try
+            {
+                await _usersRepository.RunInTransaction(async () =>
+                {
+                    User user = _usersManager.GetById(data.Id);
+                    _usersManager.EditName(user, data.Name);
+                    await _usersRepository.Update(user);
+                });
+            }
+            catch (NullUserNameException ex)
+            {
+                throw new InvalidArgumentException("User name (NULL) not valid.", ex);
+            }
+            catch (ExistingUserException ex)
+            {
+                throw new ExistingResourceException($"Exising User(Name: {data.Name}) exception.", ex);
             }
             catch (InternalRepositoryException ex)
             {

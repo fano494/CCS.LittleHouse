@@ -12,7 +12,7 @@ namespace CCS.LittleHouse.Domain.Repositories
         Task Create(Tentity entity);
         Task Update(Tentity entity);
         Task Delete(Tentity entity);
-        Task RunInTransaction(Action action);
+        Task RunInTransaction(Func<Task> action);
         Task<T> RunInTransaction<T>(Func<Task<T>> func);
     }
 }
