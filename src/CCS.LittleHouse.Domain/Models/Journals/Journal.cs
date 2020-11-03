@@ -38,12 +38,19 @@ namespace CCS.LittleHouse.Domain.Models.Journals
         {
             if (user is null)
             {
-                User = user;
-                UpdateEditDateTime();
+                throw new JournalInvalidValueException("Null user value is not valid.");
             }
             else
             {
-                throw new InvalidOperationException("The entry interval has already a User");
+                if (User is null)
+                {
+                    User = user;
+                    UpdateEditDateTime();
+                }
+                else
+                {
+                    throw new JournalAssignedException("The journal has a user yet.");
+                }
             }
         }
 
