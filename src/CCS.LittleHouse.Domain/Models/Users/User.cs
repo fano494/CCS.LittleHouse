@@ -7,24 +7,20 @@ namespace CCS.LittleHouse.Domain.Models.Users
 {
     public class User : Entity
     {
-        private IList<Journal> _journals;
         private string _name;
+        private IList<Journal> _journals;
+        private readonly uint _nameLengthMin = 4;
 
-        protected User()
+        private User()
         {
-
+            _journals = new List<Journal>();
         }
 
         public static User Create(string name)
         {
-            if (name is null)
-                throw new NullUserNameException("The user name can't be null (Creation).");
-
-            return new User()
-            {
-                _journals = new List<Journal>(),
-                _name = name
-            };
+            User user = new User();
+            user.EditName(name);
+            return user;
         }
 
         public virtual Journal[] Journals
@@ -51,13 +47,24 @@ namespace CCS.LittleHouse.Domain.Models.Users
             }
         }
 
-        protected internal virtual void EditName(string name)
+        public virtual void EditName(string name)
         {
             if (name is null)
+            {
                 throw new NullUserNameException("The user name can't be null (Edition).");
-
-            _name = name;
-            UpdateEditDateTime();
+            }
+            else
+            {
+                if (name.Length >= _nameLengthMin)
+                {
+                    _name = name;
+                    UpdateEditDateTime();
+                }
+                else
+                {
+                    throw new LengthUserNameException($"The user name must be more length or equal than {_nameLengthMin}.");
+                }
+            }
         }
 
         public virtual void AddJournal(Journal journal)

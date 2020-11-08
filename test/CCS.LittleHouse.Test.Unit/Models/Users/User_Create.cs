@@ -7,6 +7,7 @@ using System.Text;
 
 namespace CCS.LittleHouse.Test.Unit.Models.Users
 {
+    [TestFixture]
     public class User_Create
     {
         [Test]
@@ -16,7 +17,7 @@ namespace CCS.LittleHouse.Test.Unit.Models.Users
             string username = "userfake";
 
             // Act
-            User user = UserFake.Create(username);
+            User user = User.Create(username);
 
             // Assert
             Assert.AreEqual(user.Name, username);
@@ -26,7 +27,7 @@ namespace CCS.LittleHouse.Test.Unit.Models.Users
         public void Create_NullName()
         {
             // Act and Assert
-            Assert.Throws<NullUserNameException>(() => UserFake.Create(null));
+            Assert.Throws<NullUserNameException>(() => User.Create(null));
         }
     }
 }

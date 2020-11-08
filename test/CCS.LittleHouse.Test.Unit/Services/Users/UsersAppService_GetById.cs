@@ -36,7 +36,7 @@ namespace CCS.LittleHouse.Test.Unit.Services.Users
         {
             // Arrange
             Mock<IUsersRepository> repository = new Mock<IUsersRepository>();
-            User user = new UserFake("userfake");
+            User user = User.Create("userfake");
             Mock<IUsersManager> usersManager = new Mock<IUsersManager>();
             usersManager.Setup(manager => manager.GetById(It.IsAny<Guid>())).Returns(user);
             IUsersAppService service = new UsersAppService(_mapper, usersManager.Object, repository.Object);

@@ -9,12 +9,6 @@ namespace CCS.LittleHouse.Test.Unit.Models.Journals
     [TestFixture]
     public class Journal_IsSameDayTo
     {
-        [SetUp]
-        public void Setup()
-        {
-
-        }
-
         [Test]
         public void IsSameDayTo_WhenIsSameDate()
         {

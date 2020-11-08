@@ -11,12 +11,6 @@ namespace CCS.LittleHouse.Test.Unit.Models.Journals
     [TestFixture]
     public class Journal_SetUser
     {
-        [SetUp]
-        public void Setup()
-        {
-
-        }
-
         [Test]
         public void SetUser_SetNullValue()
         {
@@ -35,7 +29,7 @@ namespace CCS.LittleHouse.Test.Unit.Models.Journals
         {
             // Arrange
             Journal journal = new Journal();
-            User user = new UserFake("userfake");
+            User user = User.Create("userfake");
             DateTime editDate = journal.EditDateTime;
 
             // Act 
@@ -50,9 +44,9 @@ namespace CCS.LittleHouse.Test.Unit.Models.Journals
         public void SetUser_WhenJournalHasUser()
         {
             // Arrange
-            User userJournal = new UserFake("userjournal");
+            User userJournal = User.Create("userjournal");
             Journal journal = new JournalFake(userJournal);
-            User user = new UserFake("userfake");
+            User user = User.Create("userfake");
             DateTime editDate = journal.EditDateTime;
 
             // Act and Assert

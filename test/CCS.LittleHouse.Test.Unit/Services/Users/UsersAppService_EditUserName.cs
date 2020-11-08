@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 
 namespace CCS.LittleHouse.Test.Unit.Services.Users
 {
+    [TestFixture]
     public class UsersAppService_EditUserName
     {
         private IMapper _mapper;
@@ -49,7 +50,7 @@ namespace CCS.LittleHouse.Test.Unit.Services.Users
         public void EditUserName_EditValidName()
         {
             // Arrange
-            User user = new UserFake(_username);
+            User user = User.Create(_username);
             UserDTO userEdited = new UserDTO() { 
                 Id = user.Id,
                 Name = _username + "Edited"
@@ -81,6 +82,20 @@ namespace CCS.LittleHouse.Test.Unit.Services.Users
                 .Throws<NullUserNameException>();
             IUsersAppService usersAppService = new UsersAppService(_mapper, _usersManager.Object, _usersRepository.Object);
             
+            // Act and Assert
+            Assert.ThrowsAsync<InvalidArgumentException>(async () => await usersAppService.EditUserName(new UserDTO()));
+        }
+
+        [Test]
+        public void EditUserName_EditShortName()
+        {
+            // Arrange
+            _usersRepository.Setup(repo => repo.RunInTransaction(It.IsAny<Func<Task>>()))
+                .Returns((Func<Task> action) => action());
+            _usersManager.Setup(manager => manager.EditName(It.IsAny<User>(), It.IsAny<string>()))
+                .Throws<LengthUserNameException>();
+            IUsersAppService usersAppService = new UsersAppService(_mapper, _usersManager.Object, _usersRepository.Object);
+
             // Act and Assert
             Assert.ThrowsAsync<InvalidArgumentException>(async () => await usersAppService.EditUserName(new UserDTO()));
         }

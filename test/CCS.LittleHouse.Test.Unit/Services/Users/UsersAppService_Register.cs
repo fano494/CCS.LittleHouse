@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 
 namespace CCS.LittleHouse.Test.Unit.Services.Users
 {
+    [TestFixture]
     public class UsersAppService_Register
     {
         private IMapper _mapper;
@@ -54,7 +55,7 @@ namespace CCS.LittleHouse.Test.Unit.Services.Users
         public void Register_NewUser()
         {
             // Arrange
-            User user = new UserFake(_username);
+            User user = User.Create(_username);
             _usersManager.Setup(manager => manager.CreateUser(It.Is<string>(name => name.Equals(_username))))
                 .Returns(user);
             _repository.Setup(repo => repo.RunInTransaction(It.IsAny<Func<Task<UserDTO>>>()))
@@ -74,7 +75,8 @@ namespace CCS.LittleHouse.Test.Unit.Services.Users
         public void Register_ExistingUser()
         {
             // Arrange
-            _usersManager.Setup(manager => manager.CreateUser(It.IsAny<string>())).Throws(new ExistingUserException());
+            _usersManager.Setup(manager => manager.CreateUser(It.IsAny<string>()))
+                .Throws<ExistingUserException>();
             _repository.Setup(repo => repo.RunInTransaction(It.IsAny<Func<Task<UserDTO>>>()))
                 .Returns((Func<Task<UserDTO>> action) => action());
             IUsersAppService service = new UsersAppService(_mapper, _usersManager.Object, _repository.Object);
@@ -87,7 +89,22 @@ namespace CCS.LittleHouse.Test.Unit.Services.Users
         public void Register_NullName()
         {
             // Arrange
-            _usersManager.Setup(manager => manager.CreateUser(It.IsAny<string>())).Throws(new NullUserNameException());
+            _usersManager.Setup(manager => manager.CreateUser(It.IsAny<string>()))
+                .Throws<NullUserNameException>();
+            _repository.Setup(repo => repo.RunInTransaction(It.IsAny<Func<Task<UserDTO>>>()))
+                .Returns((Func<Task<UserDTO>> action) => action());
+            IUsersAppService service = new UsersAppService(_mapper, _usersManager.Object, _repository.Object);
+
+            // Act y Assert
+            Assert.ThrowsAsync<InvalidArgumentException>(async () => await service.Register(_username));
+        }
+
+        [Test]
+        public void Register_ShortName()
+        {
+            // Arrange
+            _usersManager.Setup(manager => manager.CreateUser(It.IsAny<string>()))
+                .Throws<LengthUserNameException>();
             _repository.Setup(repo => repo.RunInTransaction(It.IsAny<Func<Task<UserDTO>>>()))
                 .Returns((Func<Task<UserDTO>> action) => action());
             IUsersAppService service = new UsersAppService(_mapper, _usersManager.Object, _repository.Object);

@@ -8,15 +8,10 @@ using System.Text;
 
 namespace CCS.LittleHouse.Test.Unit.Models.Users
 {
+    [TestFixture]
     public class UsersManager_CreateUser
     {
         private readonly string _username = "userfake";
-
-        [SetUp]
-        public void Setup()
-        {
-
-        }
 
         [Test]
         public void CreateUser_NewName()

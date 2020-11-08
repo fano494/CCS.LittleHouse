@@ -81,6 +81,10 @@ namespace CCS.LittleHouse.Aplication.Services.Users
             {
                throw new ExistingResourceException($"Exising User(Name: {userName}) exception.", ex);
             }
+            catch (LengthUserNameException ex)
+            {
+                throw new InvalidArgumentException($"User name(Name: {userName}) not valid.", ex);
+            }
             catch (NullUserNameException ex)
             {
                 throw new InvalidArgumentException("User name (NULL) not valid.", ex);
@@ -109,6 +113,10 @@ namespace CCS.LittleHouse.Aplication.Services.Users
             catch (NullUserNameException ex)
             {
                 throw new InvalidArgumentException("User name (NULL) not valid.", ex);
+            }
+            catch (LengthUserNameException ex)
+            {
+                throw new InvalidArgumentException($"User name(Name: {data.Name}) not valid.", ex);
             }
             catch (ExistingUserException ex)
             {

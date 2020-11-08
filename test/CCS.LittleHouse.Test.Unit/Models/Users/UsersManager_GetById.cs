@@ -16,7 +16,7 @@ namespace CCS.LittleHouse.Test.Unit.Models.Users
         public void GetById_Found()
         {
             // Arrange
-            User user = new UserFake("userfake");
+            User user = User.Create("userfake");
             Mock<IUsersRepository> repository = new Mock<IUsersRepository>();
             repository.Setup(repo => repo.GetById(It.IsAny<Guid>())).Returns(user);
             IUsersManager usersManager = new UsersManager(repository.Object);

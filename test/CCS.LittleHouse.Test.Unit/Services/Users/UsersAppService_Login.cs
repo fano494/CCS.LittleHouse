@@ -30,7 +30,7 @@ namespace CCS.LittleHouse.Test.Unit.Services.Users
 
             _mapper = config.CreateMapper();
             _users = new List<User>() {
-                new UserFake(_userFakeName)
+                User.Create(_userFakeName)
             }.AsQueryable<User>();
         }
 
