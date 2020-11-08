@@ -19,7 +19,6 @@ namespace CCS.LittleHouse.IoC.Web
         public static IServiceCollection AddServices(this IServiceCollection services)
         {
             services.AddSingleton<IUsersAppService, UsersAppService>();
-            services.AddSingleton<IUsersManager, UsersManager>();
             services.AddSingleton<IUsersRepository, UsersRepository>();
             services.AddSingleton<IJournalsAppService, JournalsAppService>();
             services.AddSingleton<IJournalsRepository, JournalsRepository>();

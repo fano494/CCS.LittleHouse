@@ -1,4 +1,5 @@
-﻿using CCS.LittleHouse.Domain.Models.Users;
+﻿using CCS.LittleHouse.Application.Factories.Users;
+using CCS.LittleHouse.Domain.Models.Users;
 using CCS.LittleHouse.Domain.Repositories.Users;
 using Moq;
 using NUnit.Framework;
@@ -7,10 +8,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace CCS.LittleHouse.Test.Unit.Models.Users
+namespace CCS.LittleHouse.Test.Unit.Factories.Users
 {
     [TestFixture]
-    public class UsersManager_EditName
+    public class UsersFactory_EditName
     {
         private User _user;
         private Mock<IUsersRepository> _usersRepository;
@@ -30,11 +31,11 @@ namespace CCS.LittleHouse.Test.Unit.Models.Users
             // Arrange
             _usersRepository.Setup(mock => mock.IsNameUnique(It.IsAny<string>()))
                 .Returns(true);
-            IUsersManager usersManager = new UsersManager(_usersRepository.Object);
+            IUsersFactory usersFactory = new UsersFactory(_usersRepository.Object);
             DateTime editDate = _user.EditDateTime;
 
             // Act
-            usersManager.EditName(_user, _userNewName);
+            usersFactory.EditName(_user, _userNewName);
 
             // Assert
             Assert.AreEqual(_user.Name, _userNewName);
@@ -47,11 +48,11 @@ namespace CCS.LittleHouse.Test.Unit.Models.Users
             // Arrange
             _usersRepository.Setup(mock => mock.IsNameUnique(It.IsAny<string>()))
                 .Returns(false);
-            IUsersManager usersManager = new UsersManager(_usersRepository.Object);
+            IUsersFactory usersFactory = new UsersFactory(_usersRepository.Object);
             DateTime editDate = _user.EditDateTime;
 
             // Act and Assert
-            Assert.Throws<ExistingUserException>(() => usersManager.EditName(_user, _userNewName));
+            Assert.Throws<ExistingUserException>(() => usersFactory.EditName(_user, _userNewName));
             Assert.AreEqual(_user.Name, _userName);
             Assert.AreEqual(editDate, _user.EditDateTime);
         }
@@ -62,11 +63,11 @@ namespace CCS.LittleHouse.Test.Unit.Models.Users
             // Arrange
             _usersRepository.Setup(mock => mock.IsNameUnique(It.IsAny<string>()))
                 .Returns(true);
-            IUsersManager usersManager = new UsersManager(_usersRepository.Object);
+            IUsersFactory usersFactory = new UsersFactory(_usersRepository.Object);
             DateTime editDate = _user.EditDateTime;
 
             // Act and Assert
-            Assert.Throws<NullUserNameException>(() => usersManager.EditName(_user, null));
+            Assert.Throws<NullUserNameException>(() => usersFactory.EditName(_user, null));
             Assert.AreEqual(_user.Name, _userName);
             Assert.AreEqual(editDate, _user.EditDateTime);
         }
@@ -77,11 +78,11 @@ namespace CCS.LittleHouse.Test.Unit.Models.Users
             // Arrange
             _usersRepository.Setup(mock => mock.IsNameUnique(It.IsAny<string>()))
                 .Returns(true);
-            IUsersManager usersManager = new UsersManager(_usersRepository.Object);
+            IUsersFactory usersFactory = new UsersFactory(_usersRepository.Object);
             DateTime editDate = _user.EditDateTime;
 
             // Act and Assert
-            Assert.Throws<LengthUserNameException>(() => usersManager.EditName(_user, "abc"));
+            Assert.Throws<LengthUserNameException>(() => usersFactory.EditName(_user, "abc"));
             Assert.AreEqual(_user.Name, _userName);
             Assert.AreEqual(editDate, _user.EditDateTime);
         }

@@ -2,6 +2,7 @@
 using CCS.LittleHouse.Aplication.DTO.Users;
 using CCS.LittleHouse.Aplication.Exceptions;
 using CCS.LittleHouse.Aplication.Interfaces.Users;
+using CCS.LittleHouse.Application.Factories.Users;
 using CCS.LittleHouse.Domain.Models.Users;
 using CCS.LittleHouse.Domain.Repositories.Exceptions;
 using CCS.LittleHouse.Domain.Repositories.Users;
@@ -14,21 +15,21 @@ namespace CCS.LittleHouse.Aplication.Services.Users
     public class UsersAppService : IUsersAppService
     {
         private readonly IMapper _mapper;
-        private readonly IUsersManager _usersManager;
+        private readonly IUsersFactory _usersFactory;
         private readonly IUsersRepository _usersRepository;
 
-        public UsersAppService(IMapper mapper, IUsersManager usersManager, IUsersRepository usersRepository)
+        public UsersAppService(IMapper mapper, IUsersFactory usersFactory, IUsersRepository usersRepository)
         {
             _mapper = mapper;
-            _usersManager = usersManager;
             _usersRepository = usersRepository;
+            _usersFactory = usersFactory;
         }
 
         public UserDTO GetById(Guid id)
         {
             try
             {
-                User user = _usersManager.GetById(id);
+                User user = _usersRepository.GetById(id);
                 return _mapper.Map<UserDTO>(user);
             }
             catch(EntityNotFoundException ex)
@@ -49,7 +50,7 @@ namespace CCS.LittleHouse.Aplication.Services.Users
         {
             try
             {
-                User user = _usersManager.GetAll.First(u => u.Name.Equals(userName));
+                User user = _usersRepository.GetAll.First(u => u.Name.Equals(userName));
                 return _mapper.Map<UserDTO>(user);
             }
             catch (InvalidOperationException ex)
@@ -72,7 +73,7 @@ namespace CCS.LittleHouse.Aplication.Services.Users
             {
                 return await _usersRepository.RunInTransaction(async () =>
                 {
-                    User user = _usersManager.CreateUser(userName);
+                    User user = _usersFactory.CreateUser(userName);
                     await _usersRepository.Create(user);
                     return _mapper.Map<UserDTO>(user);
                 });
@@ -105,8 +106,8 @@ namespace CCS.LittleHouse.Aplication.Services.Users
             {
                 await _usersRepository.RunInTransaction(async () =>
                 {
-                    User user = _usersManager.GetById(data.Id);
-                    _usersManager.EditName(user, data.Name);
+                    User user = _usersRepository.GetById(data.Id);
+                    _usersFactory.EditName(user, data.Name);
                     await _usersRepository.Update(user);
                 });
             }

@@ -1,26 +1,20 @@
-﻿using CCS.LittleHouse.Domain.Repositories.Users;
+﻿using CCS.LittleHouse.Domain.Models.Users;
+using CCS.LittleHouse.Domain.Repositories.Users;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CCS.LittleHouse.Domain.Models.Users
+namespace CCS.LittleHouse.Application.Factories.Users
 {
-    public class UsersManager : IUsersManager
+    public class UsersFactory : IUsersFactory
     {
         private readonly IUsersRepository _usersRepository;
-
-        public UsersManager(IUsersRepository usersRepository)
+        
+        public UsersFactory(IUsersRepository usersRepository)
         {
             _usersRepository = usersRepository;
-        }
-
-        public IQueryable<User> GetAll => _usersRepository.GetAll;
-
-        public User GetById(Guid id)
-        {
-            return _usersRepository.GetById(id);
         }
 
         public User CreateUser(string name)

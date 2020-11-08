@@ -4,6 +4,7 @@ using CCS.LittleHouse.Aplication.DTO.Users;
 using CCS.LittleHouse.Aplication.Exceptions;
 using CCS.LittleHouse.Aplication.Interfaces.Users;
 using CCS.LittleHouse.Aplication.Services.Users;
+using CCS.LittleHouse.Application.Factories.Users;
 using CCS.LittleHouse.Domain.Models.Users;
 using CCS.LittleHouse.Domain.Repositories.Users;
 using Moq;
@@ -39,10 +40,10 @@ namespace CCS.LittleHouse.Test.Unit.Services.Users
         {
             // Arrange
             Mock<IUsersRepository> repository = new Mock<IUsersRepository>();
-            Mock<IUsersManager> usersManager = new Mock<IUsersManager>();
-            usersManager.Setup(manager => manager.GetAll).Returns(_users);
+            Mock<IUsersFactory> usersFactory = new Mock<IUsersFactory>();
+            repository.Setup(repo => repo.GetAll).Returns(_users);
 
-            IUsersAppService service = new UsersAppService(_mapper, usersManager.Object, repository.Object);
+            IUsersAppService service = new UsersAppService(_mapper, usersFactory.Object, repository.Object);
 
             // Act
             UserDTO result = service.Login(_userFakeName);
@@ -56,9 +57,9 @@ namespace CCS.LittleHouse.Test.Unit.Services.Users
         {
             // Arrange
             Mock<IUsersRepository> repository = new Mock<IUsersRepository>();
-            Mock<IUsersManager> usersManager = new Mock<IUsersManager>();
-            usersManager.Setup(manager => manager.GetAll).Returns(_users);
-            IUsersAppService service = new UsersAppService(_mapper, usersManager.Object, repository.Object);
+            Mock<IUsersFactory> usersFactory = new Mock<IUsersFactory>();
+            repository.Setup(repo => repo.GetAll).Returns(_users);
+            IUsersAppService service = new UsersAppService(_mapper, usersFactory.Object, repository.Object);
 
             // Act and Assert
             Assert.Throws<ResourceNotFoundException>(() => service.Login(_userFakeName + "notfound"));

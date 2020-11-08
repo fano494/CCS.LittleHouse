@@ -4,6 +4,7 @@ using CCS.LittleHouse.Aplication.DTO.Users;
 using CCS.LittleHouse.Aplication.Exceptions;
 using CCS.LittleHouse.Aplication.Interfaces.Users;
 using CCS.LittleHouse.Aplication.Services.Users;
+using CCS.LittleHouse.Application.Factories.Users;
 using CCS.LittleHouse.Domain.Models.Users;
 using CCS.LittleHouse.Domain.Repositories.Exceptions;
 using CCS.LittleHouse.Domain.Repositories.Users;
@@ -37,9 +38,9 @@ namespace CCS.LittleHouse.Test.Unit.Services.Users
             // Arrange
             Mock<IUsersRepository> repository = new Mock<IUsersRepository>();
             User user = User.Create("userfake");
-            Mock<IUsersManager> usersManager = new Mock<IUsersManager>();
-            usersManager.Setup(manager => manager.GetById(It.IsAny<Guid>())).Returns(user);
-            IUsersAppService service = new UsersAppService(_mapper, usersManager.Object, repository.Object);
+            Mock<IUsersFactory> usersFactory = new Mock<IUsersFactory>();
+            repository.Setup(repo => repo.GetById(It.IsAny<Guid>())).Returns(user);
+            IUsersAppService service = new UsersAppService(_mapper, usersFactory.Object, repository.Object);
 
             // Act
             UserDTO result = service.GetById(user.Id);
@@ -54,9 +55,9 @@ namespace CCS.LittleHouse.Test.Unit.Services.Users
         {
             // Arrange
             Mock<IUsersRepository> repository = new Mock<IUsersRepository>();
-            Mock<IUsersManager> usersManager = new Mock<IUsersManager>();
-            usersManager.Setup(manager => manager.GetById(It.IsAny<Guid>())).Throws(new EntityNotFoundException());
-            IUsersAppService service = new UsersAppService(_mapper, usersManager.Object, repository.Object);
+            Mock<IUsersFactory> usersFactory = new Mock<IUsersFactory>();
+            repository.Setup(repo => repo.GetById(It.IsAny<Guid>())).Throws(new EntityNotFoundException());
+            IUsersAppService service = new UsersAppService(_mapper, usersFactory.Object, repository.Object);
 
             // Act and Assert
             Assert.Throws<ResourceNotFoundException>(() => service.GetById(Guid.NewGuid()));
