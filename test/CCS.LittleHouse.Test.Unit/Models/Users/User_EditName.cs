@@ -11,12 +11,6 @@ namespace CCS.LittleHouse.Test.Unit.Models.Users
     {
         private readonly string _userName = "userfake";
 
-        [SetUp]
-        public void Setup()
-        {
-
-        }
-
         [Test]
         public void EditName_ValidName()
         {
@@ -41,7 +35,7 @@ namespace CCS.LittleHouse.Test.Unit.Models.Users
             DateTime dateTime = user.EditDateTime;
 
             // Act and Assert
-            Assert.Throws<NullUserNameException>(() => user.EditName(null));
+            Assert.Throws<InvalidValueUserException>(() => user.EditName(null));
             Assert.AreEqual(dateTime, user.EditDateTime);
         }
 

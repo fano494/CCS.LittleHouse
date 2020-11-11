@@ -27,7 +27,7 @@ namespace CCS.LittleHouse.Test.Unit.Models.Users
         public void Create_NullName()
         {
             // Act and Assert
-            Assert.Throws<NullUserNameException>(() => User.Create(null));
+            Assert.Throws<InvalidValueUserException>(() => User.Create(null));
         }
     }
 }

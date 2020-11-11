@@ -28,7 +28,7 @@ namespace CCS.LittleHouse.Domain.Models.Journals
 
         public virtual void SetJournal(Journal journal)
         {
-            if (journal is null)
+            if (Journal is null)
             {
                 Journal = journal;
                 UpdateEditDateTime();

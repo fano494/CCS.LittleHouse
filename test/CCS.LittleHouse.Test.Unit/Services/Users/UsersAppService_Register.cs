@@ -91,7 +91,7 @@ namespace CCS.LittleHouse.Test.Unit.Services.Users
         {
             // Arrange
             _usersFactory.Setup(manager => manager.CreateUser(It.IsAny<string>()))
-                .Throws<NullUserNameException>();
+                .Throws<InvalidValueUserException>();
             _repository.Setup(repo => repo.RunInTransaction(It.IsAny<Func<Task<UserDTO>>>()))
                 .Returns((Func<Task<UserDTO>> action) => action());
             IUsersAppService service = new UsersAppService(_mapper, _usersFactory.Object, _repository.Object);

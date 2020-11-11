@@ -11,7 +11,6 @@ namespace CCS.LittleHouse.Aplication.AutoMapper.Journals
     {
         public JournalsMappingProfile()
         {
-            CreateMap<JournalDTO, Journal>().ForMember(dest => dest.User, opt => opt.Ignore());
             CreateMap<Journal, JournalDTO>().ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.User.Id));
         }
     }

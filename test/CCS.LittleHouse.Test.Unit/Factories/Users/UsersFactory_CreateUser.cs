@@ -50,7 +50,7 @@ namespace CCS.LittleHouse.Test.Unit.Factories.Users
             IUsersFactory usersFactory = new UsersFactory(repository.Object);
 
             // Act and Assert
-            Assert.Throws<NullUserNameException>(() => usersFactory.CreateUser(null));
+            Assert.Throws<InvalidValueUserException>(() => usersFactory.CreateUser(null));
         }
     }
 }

@@ -31,10 +31,12 @@ namespace CCS.LittleHouse.Aplication.Services.Journals
             await _journalsRepository.RunInTransaction(async () =>
             {
                 Journal journal = _journalsRepository.GetById(data.JournalId);
-                Entry entry = _mapper.Map<EntryDTO, Entry>(data);
+                Interval interval = (Interval)Enum.Parse(typeof(Interval), data.Interval);
+                State state = (State)Enum.Parse(typeof(State), data.State);
+                Entry entry = new Entry(interval, state);
 
                 journal.AddEntry(entry);
-                await _journalsRepository.Create(journal);
+                await _journalsRepository.Update(journal);
             });
         }
 
@@ -43,10 +45,11 @@ namespace CCS.LittleHouse.Aplication.Services.Journals
             await _journalsRepository.RunInTransaction(async () =>
             {
                 Journal journal = _journalsRepository.GetById(data.JournalId);
-                Entry entry = _mapper.Map<EntryDTO, Entry>(data);
-
-                journal.EditEntry(entry);
-                await _journalsRepository.Create(journal);
+                Interval interval = (Interval) Enum.Parse(typeof(Interval), data.Interval);
+                State state = (State)Enum.Parse(typeof(State), data.State);
+                
+                journal.EditEntry(interval, state);
+                await _journalsRepository.Update(journal);
             });
         }
 
@@ -55,10 +58,10 @@ namespace CCS.LittleHouse.Aplication.Services.Journals
             await _journalsRepository.RunInTransaction(async () =>
             {
                 Journal journal = _journalsRepository.GetById(data.JournalId);
-                Entry entry = _mapper.Map<EntryDTO, Entry>(data);
+                Interval interval = (Interval)Enum.Parse(typeof(Interval), data.Interval);
 
-                journal.DeleteEntry(entry);
-                await _journalsRepository.Create(journal);
+                journal.DeleteEntry(interval);
+                await _journalsRepository.Update(journal);
             });
         }
 

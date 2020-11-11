@@ -86,7 +86,7 @@ namespace CCS.LittleHouse.Aplication.Services.Users
             {
                 throw new InvalidArgumentException($"User name(Name: {userName}) not valid.", ex);
             }
-            catch (NullUserNameException ex)
+            catch (InvalidValueUserException ex)
             {
                 throw new InvalidArgumentException("User name (NULL) not valid.", ex);
             } 
@@ -111,7 +111,7 @@ namespace CCS.LittleHouse.Aplication.Services.Users
                     await _usersRepository.Update(user);
                 });
             }
-            catch (NullUserNameException ex)
+            catch (InvalidValueUserException ex)
             {
                 throw new InvalidArgumentException("User name (NULL) not valid.", ex);
             }

@@ -19,7 +19,7 @@ namespace CCS.LittleHouse.Test.Unit.Services.Users
     [TestFixture]
     public class UsersAppService_EditUserName
     {
-        private IMapper _mapper;
+        private Mock<IMapper> _mapper;
         private Mock<IUsersFactory> _usersFactory;
         private Mock<IUsersRepository> _usersRepository;
         private readonly string _username = "userfake";
@@ -27,11 +27,7 @@ namespace CCS.LittleHouse.Test.Unit.Services.Users
         [SetUp]
         public void Setup()
         {
-            MapperConfiguration configuration = new MapperConfiguration(conf => {
-                conf.AddProfile(typeof(UsersMappingProfile));
-            });
-
-            _mapper = configuration.CreateMapper();
+            _mapper = new Mock<IMapper>();
             _usersFactory = new Mock<IUsersFactory>();
             _usersRepository = new Mock<IUsersRepository>();
         }
@@ -41,7 +37,7 @@ namespace CCS.LittleHouse.Test.Unit.Services.Users
         {
             // Arrange
             _usersRepository.Setup(repo => repo.RunInTransaction(It.IsAny<Func<Task>>()));
-            IUsersAppService usersAppService = new UsersAppService(_mapper, _usersFactory.Object, _usersRepository.Object);
+            IUsersAppService usersAppService = new UsersAppService(_mapper.Object, _usersFactory.Object, _usersRepository.Object);
 
             // Act and Assert
             Assert.DoesNotThrowAsync(() => usersAppService.EditUserName(new UserDTO()));
@@ -62,14 +58,13 @@ namespace CCS.LittleHouse.Test.Unit.Services.Users
             _usersRepository.Setup(repo => repo.GetById(userEdited.Id))
                 .Returns(user);
             _usersFactory.Setup(manager => manager.EditName(user, userEdited.Name))
-                .Callback(() => user = _mapper.Map<User>(userEdited));
-            IUsersAppService usersAppService = new UsersAppService(_mapper, _usersFactory.Object, _usersRepository.Object);
+                .Callback(() => user = User.Create(userEdited.Name));
+            IUsersAppService usersAppService = new UsersAppService(_mapper.Object, _usersFactory.Object, _usersRepository.Object);
 
             // Act
             usersAppService.EditUserName(userEdited).Wait();
 
             // Assert
-            Assert.AreEqual(user.Id, userEdited.Id);
             Assert.AreEqual(user.Name, userEdited.Name);
         }
 
@@ -80,8 +75,8 @@ namespace CCS.LittleHouse.Test.Unit.Services.Users
             _usersRepository.Setup(repo => repo.RunInTransaction(It.IsAny<Func<Task>>()))
                 .Returns((Func<Task> action) => action());
             _usersFactory.Setup(manager => manager.EditName(It.IsAny<User>(), null))
-                .Throws<NullUserNameException>();
-            IUsersAppService usersAppService = new UsersAppService(_mapper, _usersFactory.Object, _usersRepository.Object);
+                .Throws<InvalidValueUserException>();
+            IUsersAppService usersAppService = new UsersAppService(_mapper.Object, _usersFactory.Object, _usersRepository.Object);
             
             // Act and Assert
             Assert.ThrowsAsync<InvalidArgumentException>(async () => await usersAppService.EditUserName(new UserDTO()));
@@ -95,7 +90,7 @@ namespace CCS.LittleHouse.Test.Unit.Services.Users
                 .Returns((Func<Task> action) => action());
             _usersFactory.Setup(manager => manager.EditName(It.IsAny<User>(), It.IsAny<string>()))
                 .Throws<LengthUserNameException>();
-            IUsersAppService usersAppService = new UsersAppService(_mapper, _usersFactory.Object, _usersRepository.Object);
+            IUsersAppService usersAppService = new UsersAppService(_mapper.Object, _usersFactory.Object, _usersRepository.Object);
 
             // Act and Assert
             Assert.ThrowsAsync<InvalidArgumentException>(async () => await usersAppService.EditUserName(new UserDTO()));
@@ -109,7 +104,7 @@ namespace CCS.LittleHouse.Test.Unit.Services.Users
                 .Returns((Func<Task> action) => action());
             _usersFactory.Setup(manager => manager.EditName(It.IsAny<User>(), It.IsAny<string>()))
                 .Throws<ExistingUserException>();
-            IUsersAppService usersAppService = new UsersAppService(_mapper, _usersFactory.Object, _usersRepository.Object);
+            IUsersAppService usersAppService = new UsersAppService(_mapper.Object, _usersFactory.Object, _usersRepository.Object);
 
             // Act and Assert
             Assert.ThrowsAsync<ExistingResourceException>(async () => await usersAppService.EditUserName(new UserDTO()));

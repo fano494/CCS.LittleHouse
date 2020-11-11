@@ -67,7 +67,7 @@ namespace CCS.LittleHouse.Test.Unit.Factories.Users
             DateTime editDate = _user.EditDateTime;
 
             // Act and Assert
-            Assert.Throws<NullUserNameException>(() => usersFactory.EditName(_user, null));
+            Assert.Throws<InvalidValueUserException>(() => usersFactory.EditName(_user, null));
             Assert.AreEqual(_user.Name, _userName);
             Assert.AreEqual(editDate, _user.EditDateTime);
         }

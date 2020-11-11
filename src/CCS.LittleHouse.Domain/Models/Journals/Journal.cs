@@ -8,78 +8,88 @@ namespace CCS.LittleHouse.Domain.Models.Journals
     public class Journal : Entity
     {
         private IList<Entry> _entries;
+        private User _user;
 
-        public virtual User User { get; protected set; }
-
-        public virtual Entry[] Entries
-        {
-            get
-            {
-                return _entries.ToArray();
-            }
-            protected set
-            {
-                _entries = new List<Entry>(value);
-            }
-        }
-
-        public Journal()
+        private Journal(User user)
         {
             _entries = new List<Entry>();
-            User = null;
+            _user = user;
         }
 
-        public virtual bool IsSameDayTo(Journal journal)
-        {
-            return this.CreateDateTime.Date.Equals(journal.CreateDateTime.Date);
-        }
-
-        public virtual void SetUser(User user)
-        {
+        public static Journal Create(User user) {
             if (user is null)
             {
-                throw new JournalInvalidValueException("Null user value is not valid.");
+                throw new InvalidValueJournalException("Null user value is not valid.");
             }
             else
             {
-                if (User is null)
-                {
-                    User = user;
-                    UpdateEditDateTime();
-                }
-                else
-                {
-                    throw new JournalAssignedException("The journal has a user yet.");
-                }
+                return new Journal(user);
             }
+        }
+
+        public virtual User User => _user;
+
+        public virtual Entry[] Entries => _entries.ToArray();
+
+        public virtual bool IsSameDayTo(Journal journal)
+        {
+            if(journal is null)
+            {
+                return false;
+            }
+
+            return this.CreateDateTime.Date.Equals(journal.CreateDateTime.Date);
         }
 
         public virtual void AddEntry(Entry entry)
         {
-            if (_entries.Count(_entry => _entry.Interval == entry.Interval) == 0)
+            if (entry is null)
             {
-                entry.SetJournal(this);
-                _entries.Add(entry);
-                UpdateEditDateTime();
+                throw new InvalidValueJournalException("Null entry value is not valid.");
             }
             else
             {
-                throw new InvalidOperationException("The entry interval is already in the list");
+                if (_entries.Count(_entry => _entry.Interval.Equals(entry.Interval)) == 0)
+                {
+                    entry.SetJournal(this);
+                    _entries.Add(entry);
+                    UpdateEditDateTime();
+                }
+                else
+                {
+                    throw new DuplicatedValueJournalException("The entry interval is already in the list");
+                }
             }
         }
 
-        public virtual void EditEntry(Entry value)
+        public virtual void EditEntry(Interval interval, State state)
         {
-            Entry entry = _entries.First(_entry => _entry.Equals(value));
-            entry.EditState(value.State);
-            UpdateEditDateTime();
+            Entry entry = _entries.FirstOrDefault(_entry => _entry.Interval.Equals(interval));
+            
+            if(entry is null)
+            {
+                throw new EntryNotFoundException("The entry interval is not in the list.");
+            }
+            else
+            {
+                entry.EditState(state);
+                UpdateEditDateTime();
+            }
         }
 
-        public virtual void DeleteEntry(Entry value)
+        public virtual void DeleteEntry(Interval interval)
         {
-            Entry entry = _entries.First(_entry => _entry.Equals(value));
-            _entries.Remove(entry);
-            UpdateEditDateTime();
+            Entry entry = _entries.FirstOrDefault(_entry => _entry.Interval.Equals(interval));
+
+            if (entry is null)
+            {
+                throw new EntryNotFoundException("The entry interval is not in the list.");   
+            }
+            else
+            {
+                _entries.Remove(entry);
+                UpdateEditDateTime();
+            }
         }
     }
 }

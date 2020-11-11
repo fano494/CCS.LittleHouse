@@ -8,7 +8,6 @@ namespace CCS.LittleHouse.Aplication.AutoMapper.Users
     {
         public UsersMappingProfile()
         {
-            CreateMap<UserDTO, User>();
             CreateMap<User, UserDTO>();
         }
     }

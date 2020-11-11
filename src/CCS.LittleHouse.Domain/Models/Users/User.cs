@@ -9,7 +9,7 @@ namespace CCS.LittleHouse.Domain.Models.Users
     {
         private string _name;
         private IList<Journal> _journals;
-        private readonly uint _nameLengthMin = 4;
+        private static readonly uint _nameLengthMin = 4;
 
         private User()
         {
@@ -23,35 +23,15 @@ namespace CCS.LittleHouse.Domain.Models.Users
             return user;
         }
 
-        public virtual Journal[] Journals
-        {
-            get
-            {
-                return _journals.ToArray();
-            }
-            protected set
-            {
-                _journals = new List<Journal>(value);
-            }
-        }
+        public virtual Journal[] Journals => _journals.ToArray();
 
-        public virtual string Name
-        {
-            get
-            {
-                return _name;
-            }
-            protected set
-            {
-                _name = value;
-            }
-        }
-
+        public virtual string Name => _name;
+        
         public virtual void EditName(string name)
         {
             if (name is null)
             {
-                throw new NullUserNameException("The user name can't be null (Edition).");
+                throw new InvalidValueUserException("The user name can't be null (Edition).");
             }
             else
             {
@@ -69,15 +49,28 @@ namespace CCS.LittleHouse.Domain.Models.Users
 
         public virtual void AddJournal(Journal journal)
         {
-            if (_journals.Count(_journal => _journal.IsSameDayTo(journal)) == 0)
+            if(journal is null)
             {
-                journal.SetUser(this);
-                _journals.Add(journal);
-                UpdateEditDateTime();
+                throw new InvalidValueUserException("The journal can't be null (Add).");
             }
             else
             {
-                throw new InvalidOperationException("The journal is already in the list");
+                if (_journals.Count(_journal => _journal.IsSameDayTo(journal)) == 0)
+                {
+                    if (journal.User.Equals(this))
+                    {
+                        _journals.Add(journal);
+                        UpdateEditDateTime();
+                    }
+                    else
+                    {
+                        throw new WrongUserJournalException("The journal user is not this user.");
+                    }
+                }
+                else
+                {
+                    throw new InvalidValueUserException("The journal is already in the list.");
+                }
             }
         }
 
